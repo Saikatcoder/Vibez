@@ -18,7 +18,7 @@ const sizeMap = {
 const Avatar: FC<AvatarInterface> = ({
   size = "lg",
   title,
-  subtitle = "Subtitle missing",
+  subtitle ,
   image,
   titleColor = "#000",
   subtitleColor = "#666",

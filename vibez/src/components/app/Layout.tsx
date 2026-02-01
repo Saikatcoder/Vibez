@@ -147,12 +147,12 @@ const Layout = () => {
                   />
 
                   <div className="flex gap-2 opacity-80 group-hover:opacity-100">
-                    <button className="rounded-full bg-blue-100 p-2 text-blue-600 hover:bg-blue-500 hover:text-white">
-                      <i className="ri-chat-3-line text-sm" />
-                    </button>
-                    <button className="rounded-full bg-green-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
+                  <Link to="/app/chat" className="rounded-full bg-purple-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
+                   <i className="ri-chat-3-line text-sm" />
+                  </Link>
+                   <Link to="/app/audio-chat" className="rounded-full bg-purple-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
                       <i className="ri-phone-line text-sm" />
-                    </button>
+                    </Link>
                     <Link to="/app/video-chat" className="rounded-full bg-red-100 p-2 text-red-600 hover:bg-red-500 hover:text-white">
                       <i className="ri-video-on-line text-sm" />
                     </Link>

@@ -8,6 +8,8 @@ import Dashboard from "./components/app/Dashboard"
 import Post from "./components/app/Post"
 import Friends from "./components/app/Friends"
 import Video from "./components/app/Video"
+import Audio from "./components/app/Audio"
+import Chat from "./components/app/Chat"
 const App = () => {
   return (
     <div>
@@ -21,6 +23,8 @@ const App = () => {
             <Route path="my-post" element={<Post />} />
             <Route path="friends" element={<Friends />} />
             <Route path="video-chat" element={<Video />} />
+            <Route path="audio-chat" element={<Audio/>} />
+            <Route path ="chat" element={<Chat/>} />
           </Route>
         </Routes>
       </BrowserRouter>

@@ -10,8 +10,6 @@ const Video = () => {
         <div className="relative w-full pb-[56.25%]">
           <video className="absolute inset-0 h-full w-full object-cover" />
         </div>
-
-
         <div className="absolute top-4 left-4 rounded-full bg-gray-500 text-white px-3 py-1 text-xs  backdrop-blur">
           <Avatar size="sm" subtitle="Saikat" image="/image/avtar.png" subtitleColor="white" />
         </div>
@@ -24,8 +22,7 @@ const Video = () => {
             transition-all duration-300
             group-hover:pointer-events-auto
             group-hover:opacity-100
-          "
-        >
+          ">
           <div className="mb-4 flex justify-evenly rounded-full  w-full  py-3 backdrop-blur-md">
             <button className="video-btn text-purple-500 hover:bg-purple-500 hover:text-white rounded-full w-10 h-10">
               <i className="ri-mic-line text-lg" />
@@ -60,12 +57,6 @@ const Video = () => {
       <div className="group relative w-full overflow-hidden rounded-2xl bg-black shadow-xl flex flex-col justify-center">
         <Button icon="user-add-line" type="dark"/>
       </div>
-      </div>
-      
-      <div className="mt-6 flex justify-center sm:hidden">
-        <Button  icon="close-circle-fill" type="danger">
-          End Call
-        </Button>
       </div>
     </div>
   )
