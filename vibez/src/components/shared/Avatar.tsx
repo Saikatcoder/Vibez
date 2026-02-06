@@ -7,6 +7,7 @@ interface AvatarInterface {
   titleColor?: string
   subtitleColor?: string
   size?: "sm" | "md" | "lg"
+  key?: string | number 
 }
 
 const sizeMap = {
@@ -22,9 +23,10 @@ const Avatar: FC<AvatarInterface> = ({
   image,
   titleColor = "#000",
   subtitleColor = "#666",
+  key=0,
 }) => {
   return (
-    <div className="flex items-center gap-3">
+    <div className="flex items-center gap-3" key={key}>
       {image && (
         <img
           src={image}

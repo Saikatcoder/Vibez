@@ -10,6 +10,7 @@ import Friends from "./components/app/Friends"
 import Video from "./components/app/Video"
 import Audio from "./components/app/Audio"
 import Chat from "./components/app/Chat"
+import Notfound from "./components/Notfound"
 const App = () => {
   return (
     <div>
@@ -26,10 +27,12 @@ const App = () => {
             <Route path="audio-chat" element={<Audio/>} />
             <Route path ="chat" element={<Chat/>} />
           </Route>
+          <Route path="*" element={<Notfound />} />
         </Routes>
       </BrowserRouter>
     </div>
   )
 }
-
 export default App
+
+

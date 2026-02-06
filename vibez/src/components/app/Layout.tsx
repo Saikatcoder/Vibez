@@ -3,6 +3,7 @@ import { useState } from "react"
 import Avatar from "../shared/Avatar"
 import Card from "../shared/Card"
 
+
 const Layout = () => {
   const leftAsideSize = 350
   const rightAsideSize = 350
@@ -120,13 +121,32 @@ const Layout = () => {
 
       {/* RIGHT SIDEBAR */}
       <aside
-        className={`fixed right-0 top-0 z-40 h-full bg-white p-5 overflow-auto border-l transition-transform
+        className={`fixed right-0 top-0 z-40 h-full bg-white p-5 overflow-auto border-l transition-transform space-y-8
         ${rightOpen ? "translate-x-0" : "translate-x-full"}
         lg:translate-x-0`}
         style={{ width: rightAsideSize, transition:'0.6s' }}
       >
+        <div className="w-100 overflow-auto h-60 ">
+          <Card title="Suggestion" divider={false}>
+            <div className="space-y-3 " >
+               {
+                Array(20).fill(0).map((_,index)=>(
+                  <div key={index} className=" flex gap-4">
+                    <img src="/image/avtar.png" alt="Suggested User Avatar" className="w-16 h-16 rounded object-cover"/>
+                    <div className="">
+                      <h1 className="text-black font-medium">Saikat Dutta</h1>
+                      <button className="space-y bg-green-500 py-2 px-9 text-white rounded">Follow
+                      <i className="ri-user-add-line ml-2"></i>
+                      </button>
+                    </div>
+                  </div>
+                ))
+               }
+            </div>
+          </Card>
+        </div>
         <Card title="My Friends">
-          <div className="mt-4 space-y-3">
+          <div className="mt-4 space-y-3 " >
             {Array(12)
               .fill(0)
               .map((_, index) => (

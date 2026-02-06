@@ -1,53 +1,59 @@
 import Avatar from "../shared/Avatar"
-import Button from "../shared/Button"
+
 import Input from "../shared/Input"
 
 const Chat = () => {
   return (
-    <div className="flex h-full flex-col">
+    <div className="flex h-full flex-col bg-[#efeae2] lg:bg-transparent">
 
-      {/* CHAT BODY */}
-      <div className="h-125 flex-1 overflow-auto space-y-12 px-2
-        bg-[#efeae2] lg:bg-transparent">
+      {/* CHAT AREA */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-6">
 
-        {Array(20).fill(0).map((_, index) => (
-          <div className="space-y-8" key={index}>
+        {Array(10).fill(0).map((_, index) => (
+          <div key={index} className="space-y-4">
 
-            {/* RECEIVED */}
-            <div className="flex gap-3 items-start">
+            {/* RECEIVED MESSAGE */}
+            <div className="flex items-end gap-2 max-w-full">
               <Avatar image="/image/avtar.png" size="sm" />
 
-              <div
-                className="bg-gray-600 px-4 py-2 flex-1 relative text-white
-                rounded-2xl rounded-tl-sm
-                lg:rounded-xl"
-              >
-                <h1 className="font-medium text-white text-sm">John Doe</h1>
-                <label className="text-sm">
-                  Lorem ipsum
-                </label>
+              <div className="relative bg-gray-700 text-white px-4 py-2 rounded-2xl rounded-tl-sm
+                max-w-[85%] sm:max-w-[70%] lg:max-w-[60%] shadow">
 
-                {/* arrow only desktop */}
-                <i className="ri-arrow-left-s-fill absolute top-2 -left-6 text-4xl text-gray-600 hidden lg:block"></i>
+                <p className="text-xs font-semibold mb-1">John Doe</p>
+
+                {/* TEXT MESSAGE */}
+                <p className="text-sm leading-relaxed wrap-break-word">
+                  Lorem ipsum dolor sit amet.
+                </p>
+
+                {/* IMAGE MESSAGE */}
+                {/* <img
+                  src="/image/sample.jpg"
+                  alt="chat"
+                  className="mt-2 rounded-lg max-h-60 w-full object-cover"
+                /> */}
               </div>
             </div>
 
-            {/* SENT */}
-            <div className="flex gap-3 items-start justify-end">
-              <div
-                className="bg-green-400 px-4 py-2 flex-1 relative text-white
-                rounded-2xl rounded-tr-sm
-                lg:rounded-xl"
-              >
-                <h1 className="font-medium text-white text-sm text-right">
-                  John Doe
-                </h1>
-                <label className="text-sm">
-                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                </label>
+            {/* SENT MESSAGE */}
+            <div className="flex items-end gap-2 justify-end max-w-full">
+              <div className="relative bg-green-500 text-white px-4 py-2 rounded-2xl rounded-tr-sm
+                max-w-[85%] sm:max-w-[70%] lg:max-w-[60%] shadow">
 
-                {/* arrow only desktop */}
-                <i className="ri-arrow-right-s-fill absolute top-1 -right-6 text-4xl text-green-400 hidden lg:block"></i>
+                <p className="text-xs font-semibold mb-1 text-right">
+                  You
+                </p>
+
+                <p className="text-sm leading-relaxed wrap-break-word">
+                  Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                </p>
+
+                {/* IMAGE MESSAGE */}
+                {/* <img
+                  src="/image/sample.jpg"
+                  alt="chat"
+                  className="mt-2 rounded-lg max-h-60 w-full object-cover"
+                /> */}
               </div>
 
               <Avatar image="/image/avtar.png" size="sm" />
@@ -57,17 +63,26 @@ const Chat = () => {
         ))}
       </div>
 
-      {/* INPUT */}
-      <div className="p-3 sticky bottom-0 bg-white lg:static">
+      <div className="sticky bottom-0 bg-white border-t p-2">
         <form className="flex items-center gap-2">
+
+          <button
+            type="button"
+            className="w-10 h-10 flex items-center justify-center rounded-full border border-gray-300 hover:bg-gray-100"
+          >
+            <i className="ri-attachment-line text-gray-500" />
+          </button>
+
           <Input
             name="message"
             placeholder="Type a message..."
-            
           />
-          <Button type="success" icon="send-plane-fill" >
+
+          <button className="bg-green-500 text-white rounded py-2 px-9 gap-2 flex items-center hover:bg-green-600">
             Send
-          </Button>
+            <i className="ri-send-plane-fill text-white"></i>
+          </button>
+
         </form>
       </div>
 

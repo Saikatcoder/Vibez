@@ -2,7 +2,7 @@ import type { FC } from 'react'
 import 'remixicon/fonts/remixicon.css'
 
 const ButtonModel = {
-    primary: "bg-blue-500 hover:bg-blue-600 rounded font-medium text-white px-6 py-2",
+    primary: " bg-blue-500 hover:bg-blue-600 rounded font-medium text-white px-6 py-2",
     secondary: "bg-indigo-500 hover:bg-indigo-600 rounded font-medium text-white px-6 py-2",
     danger: "bg-rose-500 hover:bg-rose-600 rounded font-medium text-white px-6 py-2",
     warning: "bg-amber-500 hover:bg-amber-600 rounded font-medium text-white px-6 py-2",
@@ -16,15 +16,25 @@ interface ButtonInterface {
     type?: "primary" | "secondary" | "danger" | "warning" | "dark" | "success" | "info"
     onClick?: ()=>void
     icon?: string
+    size?: "sm" | "md" | "lg"
+    key?: string | number
 }
 
-const Button: FC<ButtonInterface> = ({children="Submit", type="primary", onClick, icon})=>{
+const sizeStyles = {
+   sm: "w-full text-sm py-1 rounded-lg",
+   md: "w-full text-md py-2",
+   lg: "w-full text-lg py-3",
+   mini: "w-full text-xs py-1 rounded",
+}
+
+const Button: FC<ButtonInterface> = ({key=0, children="Submit", type="primary", onClick, icon, size="md"})=>{
     return (
-        <button className={ButtonModel[type]} onClick={onClick}>
+        <button key={key} className={`${ButtonModel[type]} ${sizeStyles[size]}`} onClick={onClick}>
             {
                 icon &&
                 <i className={`ri-${icon} mr-1`}></i>
             }
+            
             {children}
         </button>
     )

@@ -3,7 +3,7 @@ import type { FC, ReactElement } from "react"
 
 interface CardInterface {
   children?: ReactElement
-  title?: string
+  title?: string ,
   footer?: ReactElement,
   divider?: boolean,
   bgColor?: string
