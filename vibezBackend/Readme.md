@@ -11,3 +11,17 @@
 8. npm i mongoose
 9. npm i dotenv
 10. npm i cors
+11. create tsconfig.json file in root and pest this code 
+  { 
+    "compilerOptions": {
+        "target": "es2020",
+        "module": "commonjs",
+        "strict": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "outDir": "./dist"
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"]
+}
