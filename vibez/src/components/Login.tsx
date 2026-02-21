@@ -1,24 +1,36 @@
-
 import { Link } from "react-router-dom"
 import Input from "./shared/Input"
 import Button from "./shared/Button"
+import Form, { type FormDataType } from "./shared/Form"
+import HttpInterceptor from "../lib/Htttpinterceptor"
+import { toast } from "react-toastify"
+import axios from "axios"
 
 const Login = () => {
+ const login = async (value: FormDataType) => {
+  try {
+    const { data } = await HttpInterceptor.post("/auth/login", value);
+    console.log("LOGIN SUCCESS", data);
+    toast.success("Login successful");
+  } catch (err: unknown) {
+    if(axios.isAxiosError(err)){
+      return toast.error(err.response?.data?.message || "Login failed");
+    }
+    if (err instanceof Error) {
+      toast.error(err.message || "Login failed");
+    } else {
+      toast.error("network error");
+    }
+  }
+};
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-green-100 to-yellow-100 px-4">
-
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-6">
 
-        {/* HEADER */}
         <h1 className="text-2xl font-bold text-center text-green-600">
-          Welcome Back 👋
+          Welcome Back 
         </h1>
-        <p className="text-center text-gray-500 mt-1">
-          Login to continue
-        </p>
-
-        {/* FORM */}
-        <form className="mt-6 space-y-4">
+        <Form className="mt-6 space-y-4" onValue={login}>
           <Input
             type="email"
             name="email"
@@ -31,24 +43,15 @@ const Login = () => {
             placeholder="Password"
           />
 
-          <Button
-            type="success"
-          >
-            Login
-          </Button>
-        </form>
-
-        {/* FOOTER */}
+          <Button>Login</Button>
+        </Form>
+         
         <p className="text-center text-sm text-gray-500 mt-4">
           Don’t have an account?{" "}
-          <Link
-            to="/signup"
-            className="text-yellow-500 font-medium hover:underline"
-          >
+          <Link to="/signup" className="text-yellow-500 font-medium">
             Sign up
           </Link>
         </p>
-
       </div>
     </div>
   )

@@ -1,9 +1,18 @@
-
 import { Link } from "react-router-dom"
 import Input from "./shared/Input"
 import Button from "./shared/Button"
+import Form, { type FormDataType } from "./shared/Form"
+import HttpInterceptor from "../lib/Htttpinterceptor"
 
 const Signup = () => {
+  const signup = async (values:FormDataType)=>{
+    try {
+    const {data}= await HttpInterceptor.post("/auth/signup", values)
+    console.log(data)
+    } catch (error) {
+      console.log(error)
+    }
+  }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-yellow-100 to-green-100 px-4">
 
@@ -11,18 +20,18 @@ const Signup = () => {
 
         {/* HEADER */}
         <h1 className="text-2xl font-bold text-center text-green-600">
-          Create Account 🚀
+          Create Account 
         </h1>
         <p className="text-center text-gray-500 mt-1">
           Join us and get started
         </p>
 
         {/* FORM */}
-        <form className="mt-6 space-y-4">
+        <Form className="mt-6 space-y-4" onValue={signup}>
           <Input
-            type="text"
-            name="name"
-            placeholder="Full name"
+           type="text"
+           name="fullname"     
+           placeholder="Full name"
           />
 
           <Input
@@ -36,13 +45,19 @@ const Signup = () => {
             name="password"
             placeholder="Password"
           />
+        
+          <Input
+          type= "text"
+            name="mobile"
+            placeholder="Mobile number"
+          />
 
           <Button
             type="success"
           >
             Sign Up
           </Button>
-        </form>
+        </Form>
 
         {/* FOOTER */}
         <p className="text-center text-sm text-gray-500 mt-4">

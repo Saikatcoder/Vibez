@@ -11,9 +11,17 @@ import Video from "./components/app/Video"
 import Audio from "./components/app/Audio"
 import Chat from "./components/app/Chat"
 import Notfound from "./components/Notfound"
+import Context from "./Context"
+import { useState } from "react"
+
+import { ToastContainer } from "react-toastify"
+import "react-toastify/dist/ReactToastify.css"
+
 const App = () => {
+  const [email, setemail] = useState(null)
+
   return (
-    <div>
+    <Context.Provider value={{ email, setemail }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -24,15 +32,17 @@ const App = () => {
             <Route path="my-post" element={<Post />} />
             <Route path="friends" element={<Friends />} />
             <Route path="video-chat" element={<Video />} />
-            <Route path="audio-chat" element={<Audio/>} />
-            <Route path ="chat" element={<Chat/>} />
+            <Route path="audio-chat" element={<Audio />} />
+            <Route path="chat" element={<Chat />} />
           </Route>
           <Route path="*" element={<Notfound />} />
         </Routes>
+
+        {/* 🔥 Toast must be here */}
+        <ToastContainer position="top-right" autoClose={3000} />
       </BrowserRouter>
-    </div>
+    </Context.Provider>
   )
 }
+
 export default App
-
-
