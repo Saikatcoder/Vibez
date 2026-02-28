@@ -1,7 +1,8 @@
 import { Link, Outlet, useLocation } from "react-router-dom"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import Avatar from "../shared/Avatar"
 import Card from "../shared/Card"
+import Context from "../../Context"
 
 
 const Layout = () => {
@@ -20,7 +21,7 @@ const Layout = () => {
   const { pathname } = useLocation()
   const getPathname = (path: string) =>
     path.split("/").pop()?.replace("-", " ").toUpperCase() || "DASHBOARD"
-
+    const {session} = useContext(Context)
   return (
     <div className="min-h-screen bg-gray-100">
 
@@ -49,13 +50,16 @@ const Layout = () => {
             className="relative flex justify-center py-10 bg-cover bg-center"
             style={{ backgroundImage: "url('/image/background.jpg')" }}
           >
-            <Avatar
-              title="Saikat Dutta"
-              subtitle="Photographer"
-              image="/image/avtar.png"
-              titleColor="white"
-              subtitleColor="#000"
-            />
+          {session && (
+  <Avatar
+    title={session.fullname}   // ✅ CORRECT
+    subtitle={session.email}
+    image="/image/avtar.png"
+    titleColor="white"
+    subtitleColor="#000"
+  />
+)}
+           
           </div>
 
           {/* MENU */}

@@ -5,85 +5,83 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { catchError, TryError } from "../util/error";
 
-const accessTokenExpiry = "10m";
+const accessTokenExpiry = '10m'
 
 interface PayloadInterface {
-  id: mongoose.Types.ObjectId;
-  fullname: string;
-  email: string;
-  mobile: string;
+    id: mongoose.Types.ObjectId
+    fullname: string
+    email: string
+    mobile: string
 }
 
-interface ErrorMessage extends Error {
-  message: string;
-  status?: number;
+const generateToken = (payload: PayloadInterface)=>{
+    const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY!, {expiresIn: accessTokenExpiry})
+    return accessToken
 }
 
-
-const generateToken = (payload: PayloadInterface) => {
-  return jwt.sign(
-    payload,
-    process.env.JWT_SECRET_KEY as string,
-    { expiresIn: accessTokenExpiry }
-  );
-};
-
-
-export const signup = async (req: Request, res: Response) => {
-  try {
-    const { fullname, email, password, mobile } = req.body;
-
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    await AuthModel.create({
-      fullname,
-      email,
-      password: hashedPassword,
-      mobile,
-    });
-
-    res.status(200).json({ message: "Signup Success" });
-  } catch (err: unknown) {
-    if(err instanceof Error){
-      res.status(500).json({ message: err.message });
+export const signup = async (req: Request, res: Response)=>{
+    try {
+        await AuthModel.create(req.body)
+        res.json({message: "Signup success"})
     }
-
-  }
-};
-
-
-export const login = async (req: Request, res: Response) => {
-  try {
-    const { email, password } = req.body;
-
-    const user = await AuthModel.findOne({ email });
-      
-    if(!user){
-      throw TryError("Invalid credentials", 401);
+    catch(err: unknown)
+    {
+        if(err instanceof Error)
+        res.status(500).json({message: err.message})
     }
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) {
-     throw TryError("Invalid credentials", 404);
+}
+
+export const login = async (req: Request, res: Response)=>{
+   try {
+        const {email, password} = req.body
+        const user = await AuthModel.findOne({email})
+        
+        if(!user)
+        throw TryError("User not found, please try to signup first", 404)
+        
+        const isLogin = await bcrypt.compare(password, user.password)
+
+        if(!isLogin)
+        throw TryError("Invalid credentials email or password incorrect", 401)
+
+        const payload = {
+            id: user._id,
+            fullname: user.fullname,
+            email: user.email,
+            mobile: user.mobile
+        }
+        const options = {
+            httpOnly: true,
+            maxAge: (10*60)*1000,
+            secure: false,
+            domain: 'localhost'
+        }
+        const accessToken = generateToken(payload)
+        res.cookie("accessToken", accessToken, options)
+        res.json({message: 'Login success'})
+   }
+   catch(err: unknown)
+   {
+        catchError(err, res, "Login failed please try after sometime")
+   }
+}
+
+export const forgotPassword = (req: Request, res: Response)=>{
+    res.send("hello")
+}
+
+export const getSession = async (req: Request, res: Response)=>{
+    try {
+        const accessToken = req.cookies.accessToken
+
+        if(!accessToken)
+            throw TryError("Invalid session", 401)
+
+        const session = await jwt.verify(accessToken, process.env.JWT_SECRET_KEY!)
+        res.json(session)
     }
-
-    const payload: PayloadInterface = {
-      id: user._id,
-      fullname: user.fullname,
-      email: user.email,
-      mobile: user.mobile,
-    };
-
-    const token = generateToken(payload);
-
-    res.cookie("token", token, {
-      httpOnly: true,
-      maxAge: 10 * 60 * 1000, // 10 minutes
-      secure: false,
-      sameSite: "lax",
-    });
-
-    res.status(200).json({ message: "Login Success" });
-  } catch (err: unknown) {
-    catchError(err, res);
-  }
-};
+    catch(err)
+    {
+        catchError(err, res, "Invalid session")
+    }
+}

@@ -13,9 +13,10 @@ export const TryError = (message:string , status:number=500)=>{
 }
 
 
-export const catchError = (err: unknown, res: Response)=>{
+export const catchError = (err: unknown, res: Response, prodMessage: string= "intenal Server Error")=>{
     if(err instanceof Error){
+        const message = (process.env.NODE_ENV === "dev" ?  err.message : prodMessage )
         const status = (err as ErrorMessage).status || 500
-        res.status(status).json({ message: err.message });
+        res.status(status).json({ message });
     }
 }

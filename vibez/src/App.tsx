@@ -16,17 +16,19 @@ import { useState } from "react"
 
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
+import Gard from "./Gard"
 
 const App = () => {
-  const [email, setemail] = useState(null)
+  const [session, setsession] = useState(null)
 
   return (
-    <Context.Provider value={{ email, setemail }}>
+    <Context.Provider value={{ session, setsession }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          <Route element={<Gard/>}>
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="my-post" element={<Post />} />
@@ -35,10 +37,9 @@ const App = () => {
             <Route path="audio-chat" element={<Audio />} />
             <Route path="chat" element={<Chat />} />
           </Route>
+          </Route>
           <Route path="*" element={<Notfound />} />
         </Routes>
-
-        {/* 🔥 Toast must be here */}
         <ToastContainer position="top-right" autoClose={3000} />
       </BrowserRouter>
     </Context.Provider>

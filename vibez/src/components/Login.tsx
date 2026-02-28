@@ -1,26 +1,20 @@
-import { Link } from "react-router-dom"
+import { Link,  useNavigate } from "react-router-dom"
 import Input from "./shared/Input"
 import Button from "./shared/Button"
 import Form, { type FormDataType } from "./shared/Form"
 import HttpInterceptor from "../lib/Htttpinterceptor"
 import { toast } from "react-toastify"
-import axios from "axios"
+import CatchError from "../lib/CatchError"
 
 const Login = () => {
+  const navigate = useNavigate()
  const login = async (value: FormDataType) => {
   try {
-    const { data } = await HttpInterceptor.post("/auth/login", value);
-    console.log("LOGIN SUCCESS", data);
+    await HttpInterceptor.post("/auth/login", value);
+    navigate("/app");
     toast.success("Login successful");
   } catch (err: unknown) {
-    if(axios.isAxiosError(err)){
-      return toast.error(err.response?.data?.message || "Login failed");
-    }
-    if (err instanceof Error) {
-      toast.error(err.message || "Login failed");
-    } else {
-      toast.error("network error");
-    }
+    CatchError(err);
   }
 };
   return (
@@ -42,10 +36,10 @@ const Login = () => {
             name="password"
             placeholder="Password"
           />
+        <span className="text-blue-500 text-sm ">Forgot Password?</span>
 
           <Button>Login</Button>
         </Form>
-         
         <p className="text-center text-sm text-gray-500 mt-4">
           Don’t have an account?{" "}
           <Link to="/signup" className="text-yellow-500 font-medium">
