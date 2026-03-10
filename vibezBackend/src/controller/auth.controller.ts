@@ -4,8 +4,17 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { catchError, TryError } from "../util/error";
+import { SessionInterface } from "../middleware/auth.middleware";
+import { Downloads3Object } from "../util/s3";
+import { v4 as uuid } from "uuid";
+import moment from "moment";
+
 
 const accessTokenExpiry = '10m'
+const tenminutes =( 10*60)*1000
+const sevenDaysMs = (7*24*60*60)*1000
+
+type TokenType = 'accessToken' | 'refreshToken'
 
 interface PayloadInterface {
     id: mongoose.Types.ObjectId
@@ -14,11 +23,24 @@ interface PayloadInterface {
     mobile: string
 }
 
+
+
 const generateToken = (payload: PayloadInterface)=>{
     const accessToken = jwt.sign(payload, process.env.JWT_SECRET_KEY!, {expiresIn: accessTokenExpiry})
-    return accessToken
+    const refreshToken = uuid()
+    return {
+        accessToken,
+        refreshToken
+    }
 }
 
+const getoptions=(tokenType: TokenType)=>{
+    return {
+        httpOnly: true,
+        maxAge: tokenType === 'accessToken' ? tenminutes : sevenDaysMs,
+        domain: 'localhost'
+    }
+}
 export const signup = async (req: Request, res: Response)=>{
     try {
         await AuthModel.create(req.body)
@@ -30,6 +52,7 @@ export const signup = async (req: Request, res: Response)=>{
         res.status(500).json({message: err.message})
     }
 }
+
 
 export const login = async (req: Request, res: Response)=>{
    try {
@@ -43,21 +66,24 @@ export const login = async (req: Request, res: Response)=>{
 
         if(!isLogin)
         throw TryError("Invalid credentials email or password incorrect", 401)
+        
+    const payload = {
+        id: user._id,
+        fullname: user.fullname,
+        email: user.email,
+        mobile: user.mobile,
+    }
+    const {accessToken, refreshToken} = generateToken(payload)
 
-        const payload = {
-            id: user._id,
-            fullname: user.fullname,
-            email: user.email,
-            mobile: user.mobile
-        }
-        const options = {
-            httpOnly: true,
-            maxAge: (10*60)*1000,
-            secure: false,
-            domain: 'localhost'
-        }
-        const accessToken = generateToken(payload)
-        res.cookie("accessToken", accessToken, options)
+        await AuthModel.updateOne({_id: user._id}, 
+            {$set:{ 
+            refreshToken,
+            expiry : moment().add(7, 'days').toDate()
+        }})
+        
+
+        res.cookie("accessToken", accessToken, getoptions('accessToken'))
+        res.cookie("refreshToken", refreshToken, getoptions('refreshToken'))
         res.json({message: 'Login success'})
    }
    catch(err: unknown)
@@ -65,6 +91,7 @@ export const login = async (req: Request, res: Response)=>{
         catchError(err, res, "Login failed please try after sometime")
    }
 }
+
 
 export const forgotPassword = (req: Request, res: Response)=>{
     res.send("hello")
@@ -85,3 +112,50 @@ export const getSession = async (req: Request, res: Response)=>{
         catchError(err, res, "Invalid session")
     }
 }
+
+
+export const updateProfilePicture = async (req: SessionInterface, res: Response)=>{
+  try {
+    const path = req.body.path
+
+    if(!path || !req.session)
+        throw TryError("Failed to update profile picture", 400)
+
+    await AuthModel.updateOne(
+        {_id: req.session.id},
+        {$set: {image: path}}
+    )
+
+    const url = await Downloads3Object(path)
+
+    res.json({image: url})
+
+  } catch (error) {
+    catchError(error, res)
+  }
+}
+
+
+export const refreshToken = async (req: SessionInterface, res: Response)=>{
+    try{
+        if(!req.session)
+        throw TryError("Invalid session", 401)
+    
+    const {accessToken, refreshToken} = generateToken(req.session)
+    await AuthModel.updateOne({_id: req.session.id},
+        {$set: {
+            refreshToken,
+            expiry : moment().add(7, 'days').toDate()
+        }})
+
+        res.cookie("accessToken", accessToken, getoptions('accessToken'))
+        res.cookie("refreshToken", refreshToken, getoptions('refreshToken'))
+        res.json({message: 'Access token refreshed successfully'})
+    }catch(err)
+    {
+        catchError(err, res, "Failed to refresh access token")
+    }
+}
+
+
+

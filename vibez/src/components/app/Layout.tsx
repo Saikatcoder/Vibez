@@ -3,7 +3,9 @@ import { useContext, useState } from "react"
 import Avatar from "../shared/Avatar"
 import Card from "../shared/Card"
 import Context from "../../Context"
-
+import HttpInterceptor from "../../lib/Htttpinterceptor"
+import { v4 as uuid } from "uuid"
+import axios from "axios"
 
 const Layout = () => {
   const leftAsideSize = 350
@@ -20,8 +22,52 @@ const Layout = () => {
 
   const { pathname } = useLocation()
   const getPathname = (path: string) =>
-    path.split("/").pop()?.replace("-", " ").toUpperCase() || "DASHBOARD"
-    const {session} = useContext(Context)
+        path.split("/").pop()?.replace("-", " ").toUpperCase() || "DASHBOARD"
+
+ const { session, setsession } = useContext(Context)
+
+  const uploadImage = () => {
+
+ const input = document.createElement("input")
+ input.type = "file"
+ input.accept = "image/*"
+ input.click()
+
+ input.onchange = async () => {
+
+   if(!input.files) return
+
+   const file = input.files[0]
+
+   if(!file.type.startsWith("image/")){
+      alert("Only image allowed")
+      return
+   }
+
+   const extension = file.type.split("/")[1]
+   const path = `profile-pictures/${uuid()}.${extension}`
+
+   try{
+
+      const {data} = await HttpInterceptor.post("/storage/upload",{
+        path,
+        type:file.type
+      })
+
+      await axios.put(data.url,file,{
+        headers:{'Content-Type':file.type}
+      })
+
+      const {data:user} = await HttpInterceptor.put("/auth/profile-picture",{path})
+
+      setsession((prev:any)=>({...prev,image:user.image}))
+
+   }catch(err){
+      console.log(err)
+   }
+ }
+}
+
   return (
     <div className="min-h-screen bg-gray-100">
 
@@ -49,16 +95,17 @@ const Layout = () => {
           <div
             className="relative flex justify-center py-10 bg-cover bg-center"
             style={{ backgroundImage: "url('/image/background.jpg')" }}
-          >
+          > 
           {session && (
-  <Avatar
-    title={session.fullname}   // ✅ CORRECT
-    subtitle={session.email}
-    image="/image/avtar.png"
-    titleColor="white"
-    subtitleColor="#000"
-  />
-)}
+            <Avatar
+                title={session.fullname}   
+                subtitle={session.email}
+                image={session.image || "/image/avtar.png"}
+                titleColor="white"
+                subtitleColor="#000"
+                onClick={uploadImage}
+            />
+          )}
            
           </div>
 
@@ -191,3 +238,5 @@ const Layout = () => {
 }
 
 export default Layout
+
+

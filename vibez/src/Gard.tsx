@@ -6,26 +6,25 @@ import { Navigate, Outlet } from "react-router-dom"
 const Guard = () => {
   const { session, setsession } = useContext(Context)
 
-  const getSession = async () => {
-    try {
-      const { data } = await HttpInterceptor.get("/auth/session")
-      setsession(data) // data = user OR false
-    } catch (err) {
-      console.log(err)
-      setsession(false)
-    }
-  }
-
   useEffect(() => {
+    const getSession = async () => {
+      try {
+        const { data } = await HttpInterceptor.get("/auth/session")
+        setsession(data) // user object OR false
+      } catch {
+        setsession(false)
+      }
+    }
+
     getSession()
   }, [])
 
   if (session === null) {
-    return null
+    return <div>Checking session...</div>
   }
 
   if (session === false) {
-    return <Navigate to="/login" />
+    return <Navigate to="/login" replace />
   }
 
   return <Outlet />
