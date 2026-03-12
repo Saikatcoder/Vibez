@@ -5,7 +5,11 @@ import Card from "../shared/Card"
 import Context from "../../Context"
 import HttpInterceptor from "../../lib/Htttpinterceptor"
 import { v4 as uuid } from "uuid"
-import axios from "axios"
+import useSWR, { mutate } from "swr"
+import Fetcher from "../../lib/fetcher"
+import { toast } from "react-toastify"
+
+const EightMinutes = 8*60*1000
 
 const Layout = () => {
   const leftAsideSize = 350
@@ -24,9 +28,16 @@ const Layout = () => {
   const getPathname = (path: string) =>
         path.split("/").pop()?.replace("-", " ").toUpperCase() || "DASHBOARD"
 
- const { session, setsession } = useContext(Context)
+  
+  const {err } = useSWR('/auth/refresh-token',  Fetcher, {
+    refreshInterval: EightMinutes ,
+    shouldRetryOnError: false
+  })
+  
+const { session, setsession } = useContext(Context)
 
-  const uploadImage = () => {
+
+ const uploadImage = () => {
 
  const input = document.createElement("input")
  input.type = "file"
@@ -45,29 +56,40 @@ const Layout = () => {
    }
 
    const extension = file.type.split("/")[1]
-   const path = `profile-pictures/${uuid()}.${extension}`
+   const path = `profile-picture/${uuid()}.${extension}`
+
+   const payload = {
+      path,
+      type:file.type
+   }
 
    try{
 
-      const {data} = await HttpInterceptor.post("/storage/upload",{
-        path,
-        type:file.type
-      })
+      const options = {
+        headers : {
+          "Content-Type" : file.type
+        }
+      }
 
-      await axios.put(data.url,file,{
-        headers:{'Content-Type':file.type}
-      })
+      const {data} = await HttpInterceptor.post('/storage/upload', payload)
 
-      const {data:user} = await HttpInterceptor.put("/auth/profile-picture",{path})
+      await HttpInterceptor.put(data.url, file, options)
 
-      setsession((prev:any)=>({...prev,image:user.image}))
+      const {data:user} = await HttpInterceptor.put('/auth/profile-picture',{path})
 
+      setsession((prev:any)=>({
+        ...prev,
+        image:user.image
+      }))
+
+      mutate("/auth/refresh-token")      
+      toast.success("Profile picture updated successfully")
    }catch(err){
       console.log(err)
+      toast.error("Failed to update profile picture")
    }
  }
 }
-
   return (
     <div className="min-h-screen bg-gray-100">
 

@@ -16,13 +16,13 @@ const sevenDaysMs = (7*24*60*60)*1000
 
 type TokenType = 'accessToken' | 'refreshToken'
 
+
 interface PayloadInterface {
     id: mongoose.Types.ObjectId
     fullname: string
     email: string
     mobile: string
 }
-
 
 
 const generateToken = (payload: PayloadInterface)=>{
@@ -34,6 +34,7 @@ const generateToken = (payload: PayloadInterface)=>{
     }
 }
 
+
 const getoptions=(tokenType: TokenType)=>{
     return {
         httpOnly: true,
@@ -41,6 +42,8 @@ const getoptions=(tokenType: TokenType)=>{
         domain: 'localhost'
     }
 }
+
+
 export const signup = async (req: Request, res: Response)=>{
     try {
         await AuthModel.create(req.body)
@@ -93,10 +96,6 @@ export const login = async (req: Request, res: Response)=>{
 }
 
 
-export const forgotPassword = (req: Request, res: Response)=>{
-    res.send("hello")
-}
-
 export const getSession = async (req: Request, res: Response)=>{
     try {
         const accessToken = req.cookies.accessToken
@@ -140,8 +139,10 @@ export const refreshToken = async (req: SessionInterface, res: Response)=>{
     try{
         if(!req.session)
         throw TryError("Invalid session", 401)
-    
+
+    req.session.image = (req.session.image ?  await Downloads3Object(req.session.image) : null)
     const {accessToken, refreshToken} = generateToken(req.session)
+
     await AuthModel.updateOne({_id: req.session.id},
         {$set: {
             refreshToken,
@@ -159,3 +160,15 @@ export const refreshToken = async (req: SessionInterface, res: Response)=>{
 
 
 
+
+
+export const logout = async (req: SessionInterface, res: Response)=>{
+    try {
+        res.clearCookie("accessToken", getoptions('accessToken'))
+        res.clearCookie("refreshToken", getoptions('refreshToken'))
+        res.json({message: 'Logged out successfully'})
+    }
+    catch (error) {
+        catchError(error, res)
+    }
+}

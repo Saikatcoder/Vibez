@@ -7,9 +7,10 @@ mongoose.connect(process.env.DB as string)
 import express from 'express';
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
-import AuthRouter from "./router/auth.routes";
-import StorageRouter from "./router/storage.router";
+
 import AuthMiddleware from "./middleware/auth.middleware";
+import AuthRouter from "./router/auth.route";
+import StorageRouter from "./router/storage.route";
 
 
 const app = express();
