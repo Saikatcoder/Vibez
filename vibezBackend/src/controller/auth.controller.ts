@@ -159,13 +159,16 @@ export const refreshToken = async (req: SessionInterface, res: Response)=>{
 }
 
 
-
-
-
 export const logout = async (req: SessionInterface, res: Response)=>{
     try {
-        res.clearCookie("accessToken", getoptions('accessToken'))
-        res.clearCookie("refreshToken", getoptions('refreshToken'))
+        const options = {
+            httpOnly: true,
+            maxAge: 0,
+            domain: 'localhost',
+            secure: false,
+        }
+        res.clearCookie("accessToken",options)
+        res.clearCookie("refreshToken", options)
         res.json({message: 'Logged out successfully'})
     }
     catch (error) {

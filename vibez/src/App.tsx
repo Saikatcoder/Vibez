@@ -16,7 +16,8 @@ import { useState } from "react"
 
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import Gard from "./Gard"
+import AuthGuard from "./guard/AuthGuard"
+
 
 const App = () => {
   const [session, setsession] = useState(null)
@@ -28,7 +29,7 @@ const App = () => {
           <Route path="/" element={<Home />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          <Route element={<Gard/>}>
+          <Route element={<AuthGuard/>}>
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="my-post" element={<Post />} />

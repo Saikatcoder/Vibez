@@ -1,5 +1,5 @@
-import { Link, Outlet, useLocation } from "react-router-dom"
-import { useContext, useState } from "react"
+import { Link, Outlet, useLocation, useNavigate } from "react-router-dom"
+import { useContext, useEffect, useState } from "react"
 import Avatar from "../shared/Avatar"
 import Card from "../shared/Card"
 import Context from "../../Context"
@@ -8,6 +8,7 @@ import { v4 as uuid } from "uuid"
 import useSWR, { mutate } from "swr"
 import Fetcher from "../../lib/fetcher"
 import { toast } from "react-toastify"
+import CatchError from "../../lib/CatchError"
 
 const EightMinutes = 8*60*1000
 
@@ -17,6 +18,7 @@ const Layout = () => {
 
   const [leftOpen, setLeftOpen] = useState(false)
   const [rightOpen, setRightOpen] = useState(false)
+  const Navigate = useNavigate()
 
   const menu = [
     { href: "/app", label: "Dashboard", icon: "ri-home-line" },
@@ -28,14 +30,30 @@ const Layout = () => {
   const getPathname = (path: string) =>
         path.split("/").pop()?.replace("-", " ").toUpperCase() || "DASHBOARD"
 
-  
-  const {err } = useSWR('/auth/refresh-token',  Fetcher, {
+  const { session, setsession } = useContext(Context)
+
+  const logout = async ()=>{
+    try {
+      await HttpInterceptor.post('/auth/logout')
+      Navigate("/login")
+      toast.success("Logged out successfully")
+    } catch (error) {
+      CatchError(error)
+      toast.error("Failed to logout")
+    }
+  }
+
+  const {error } = useSWR('/auth/refresh-token',  Fetcher, {
     refreshInterval: EightMinutes ,
     shouldRetryOnError: false
   })
   
-const { session, setsession } = useContext(Context)
-
+  useEffect(()=>{
+    if(error)
+    {
+      logout()
+    }
+  },[error])
 
  const uploadImage = () => {
 
@@ -90,6 +108,8 @@ const { session, setsession } = useContext(Context)
    }
  }
 }
+
+
   return (
     <div className="min-h-screen bg-gray-100">
 
@@ -145,7 +165,7 @@ const { session, setsession } = useContext(Context)
               </Link>
             ))}
 
-            <button className="mt-6 flex w-full items-center gap-3 rounded-xl px-4 py-3 font-medium text-gray-700 transition hover:bg-white/40 hover:text-black">
+            <button onClick={logout} className="mt-6 flex w-full items-center gap-3 rounded-xl px-4 py-3 font-medium text-gray-700 transition hover:bg-white/40 hover:text-black">
               <i className="ri-logout-box-r-line text-lg" />
               Logout
             </button>
@@ -258,6 +278,8 @@ const { session, setsession } = useContext(Context)
     </div>
   )
 }
+
+
 
 export default Layout
 
