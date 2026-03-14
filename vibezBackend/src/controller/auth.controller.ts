@@ -116,7 +116,7 @@ export const getSession = async (req: Request, res: Response)=>{
 
 export const updateProfilePicture = async (req: SessionInterface, res: Response)=>{
   try {
-    const path = req.body.path
+    const path =` ${process.env.S3_URL}/${req.body.path}`
 
     if(!path || !req.session)
         throw TryError("Failed to update profile picture", 400)

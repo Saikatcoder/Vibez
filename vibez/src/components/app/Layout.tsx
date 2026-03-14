@@ -79,7 +79,8 @@ const Layout = () => {
 
    const payload = {
       path,
-      type:file.type
+      type:file.type,
+      status:"public-read"
    }
 
    try{
