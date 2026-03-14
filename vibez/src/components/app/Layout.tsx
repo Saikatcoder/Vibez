@@ -9,6 +9,7 @@ import useSWR, { mutate } from "swr"
 import Fetcher from "../../lib/fetcher"
 import { toast } from "react-toastify"
 import CatchError from "../../lib/CatchError"
+import FriendSuggestion from "./FriendSuggestion"
 
 const EightMinutes = 8*60*1000
 
@@ -219,25 +220,7 @@ const Layout = () => {
         lg:translate-x-0`}
         style={{ width: rightAsideSize, transition:'0.6s' }}
       >
-        <div className="w-100 overflow-auto h-60 ">
-          <Card title="Suggestion" divider={false}>
-            <div className="space-y-3 " >
-               {
-                Array(20).fill(0).map((_,index)=>(
-                  <div key={index} className=" flex gap-4">
-                    <img src="/image/avtar.png" alt="Suggested User Avatar" className="w-16 h-16 rounded object-cover"/>
-                    <div className="">
-                      <h1 className="text-black font-medium">Saikat Dutta</h1>
-                      <button className="space-y bg-green-500 py-2 px-9 text-white rounded">Follow
-                      <i className="ri-user-add-line ml-2"></i>
-                      </button>
-                    </div>
-                  </div>
-                ))
-               }
-            </div>
-          </Card>
-        </div>
+      <FriendSuggestion/>
         <Card title="My Friends">
           <div className="mt-4 space-y-3 " >
             {Array(12)

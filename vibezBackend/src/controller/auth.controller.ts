@@ -5,7 +5,6 @@ import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
 import { catchError, TryError } from "../util/error";
 import { SessionInterface } from "../middleware/auth.middleware";
-import { Downloads3Object } from "../util/s3";
 import { v4 as uuid } from "uuid";
 import moment from "moment";
 
@@ -48,6 +47,7 @@ export const signup = async (req: Request, res: Response)=>{
     try {
         await AuthModel.create(req.body)
         res.json({message: "Signup success"})
+
     }
     catch(err: unknown)
     {
@@ -75,6 +75,7 @@ export const login = async (req: Request, res: Response)=>{
         fullname: user.fullname,
         email: user.email,
         mobile: user.mobile,
+        image: user.image
     }
     const {accessToken, refreshToken} = generateToken(payload)
 
@@ -124,10 +125,8 @@ export const updateProfilePicture = async (req: SessionInterface, res: Response)
         {_id: req.session.id},
         {$set: {image: path}}
     )
-
-    const url = await Downloads3Object(path)
-
-    res.json({image: url})
+    
+    res.json({image: path})
 
   } catch (error) {
     catchError(error, res)
@@ -140,7 +139,7 @@ export const refreshToken = async (req: SessionInterface, res: Response)=>{
         if(!req.session)
         throw TryError("Invalid session", 401)
 
-    req.session.image = (req.session.image ?  await Downloads3Object(req.session.image) : null)
+   
     const {accessToken, refreshToken} = generateToken(req.session)
 
     await AuthModel.updateOne({_id: req.session.id},

@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 import 'remixicon/fonts/remixicon.css'
+import 'font-awesome/css/font-awesome.min.css'
 import Signup from "./components/Signup"
 import Login from "./components/Login"
 import Home from "./components/Home"
@@ -17,6 +18,7 @@ import { useState } from "react"
 import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import AuthGuard from "./guard/AuthGuard"
+import RedirectGuard from "./guard/RedirectGuard"
 
 
 const App = () => {
@@ -27,8 +29,10 @@ const App = () => {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route element={<RedirectGuard/>}>
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
+          </Route>
           <Route element={<AuthGuard/>}>
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />

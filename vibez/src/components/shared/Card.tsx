@@ -1,8 +1,8 @@
-import type { FC, ReactElement } from "react"
+import type { FC, ReactElement, ReactNode } from "react"
 
 
 interface CardInterface {
-  children?: ReactElement
+  children?: ReactNode
   title?: string ,
   footer?: ReactElement,
   divider?: boolean,

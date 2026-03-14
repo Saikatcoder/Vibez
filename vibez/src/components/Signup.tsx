@@ -1,16 +1,18 @@
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import Input from "./shared/Input"
 import Button from "./shared/Button"
 import Form, { type FormDataType } from "./shared/Form"
 import HttpInterceptor from "../lib/Htttpinterceptor"
+import CatchError from "../lib/CatchError"
 
 const Signup = () => {
+  const navigate = useNavigate()
   const signup = async (values:FormDataType)=>{
     try {
-    const {data}= await HttpInterceptor.post("/auth/signup", values)
-    console.log(data)
+    await HttpInterceptor.post("/auth/signup", values)
+    navigate('/login')
     } catch (error) {
-      console.log(error)
+      CatchError(error)
     }
   }
   return (

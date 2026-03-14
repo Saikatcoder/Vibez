@@ -18,6 +18,7 @@ interface ButtonInterface {
     icon?: string
     size?: "sm" | "md" | "lg"
     key?: string | number
+    loading : boolean
 }
 
 const sizeStyles = {
@@ -27,7 +28,17 @@ const sizeStyles = {
    mini: "w-full text-xs py-1 rounded",
 }
 
-const Button: FC<ButtonInterface> = ({key=0, children="Submit", type="primary", onClick, icon, size="md"})=>{
+const Button: FC<ButtonInterface> = ({key=0, children="Submit", type="primary", onClick, icon, size="md", loading=false})=>{
+    if(loading)
+        return(
+     <button
+  disabled
+  className="flex items-center gap-2 bg-blue-500 text-white px-4 py-2 rounded-md opacity-80 cursor-not-allowed"
+>
+  <i className="fa fa-spinner fa-spin"></i>
+  Loading...
+</button>
+    )
     return (
         <button key={key} className={`${ButtonModel[type]} ${sizeStyles[size]}`} onClick={onClick}>
             {

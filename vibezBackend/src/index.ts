@@ -11,6 +11,7 @@ import cookieParser from 'cookie-parser'
 import AuthMiddleware from "./middleware/auth.middleware";
 import AuthRouter from "./router/auth.route";
 import StorageRouter from "./router/storage.route";
+import FriendRouter from "./router/friend.route";
 
 
 const app = express();
@@ -29,3 +30,4 @@ app.use(express.urlencoded({extended: false}))
 
 app.use("/auth", AuthRouter)
 app.use("/storage",AuthMiddleware, StorageRouter)
+app.use('/friend', AuthMiddleware, FriendRouter)
