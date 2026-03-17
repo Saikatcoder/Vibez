@@ -10,6 +10,7 @@ import Fetcher from "../../lib/fetcher"
 import { toast } from "react-toastify"
 import CatchError from "../../lib/CatchError"
 import FriendSuggestion from "./FriendSuggestion"
+import FriendRequest from "./FriendRequest"
 
 const EightMinutes = 8*60*1000
 
@@ -56,60 +57,44 @@ const Layout = () => {
     }
   },[error])
 
- const uploadImage = () => {
 
- const input = document.createElement("input")
- input.type = "file"
- input.accept = "image/*"
- input.click()
+    const uploadImage = ()=>{
+        const input = document.createElement("input")
+        input.type = "file"
+        input.accept = "image/*"
+        input.click()
+        input.onchange = async ()=>{
+            if(!input.files)
+                return
 
- input.onchange = async () => {
+            const file = input.files[0]
+            const path = `profile-pictures/${uuid()}.png`
 
-   if(!input.files) return
+            const payload = {
+                path,
+                type: file.type,
+                status: "public-read"
+            }
 
-   const file = input.files[0]
-
-   if(!file.type.startsWith("image/")){
-      alert("Only image allowed")
-      return
-   }
-
-   const extension = file.type.split("/")[1]
-   const path = `profile-picture/${uuid()}.${extension}`
-
-   const payload = {
-      path,
-      type:file.type,
-      status:"public-read"
-   }
-
-   try{
-
-      const options = {
-        headers : {
-          "Content-Type" : file.type
+            try {
+                const options = {
+                    headers: {
+                        'Content-Type': file.type
+                    }
+                }
+                const {data} = await HttpInterceptor.post("/storage/upload", payload)
+                await HttpInterceptor.put(data.url, file, options)
+                const {data: user} = await HttpInterceptor.put("/auth/profile-picture", {path})
+                setsession({...session, image: user.image})
+                mutate("/auth/refresh-token")
+            }
+            catch(err)
+            {
+                console.log(err)
+                toast.error("failed to update profiepicture")
+            }
         }
-      }
-
-      const {data} = await HttpInterceptor.post('/storage/upload', payload)
-
-      await HttpInterceptor.put(data.url, file, options)
-
-      const {data:user} = await HttpInterceptor.put('/auth/profile-picture',{path})
-
-      setsession((prev:any)=>({
-        ...prev,
-        image:user.image
-      }))
-
-      mutate("/auth/refresh-token")      
-      toast.success("Profile picture updated successfully")
-   }catch(err){
-      console.log(err)
-      toast.error("Failed to update profile picture")
-   }
- }
-}
+    }
 
 
   return (
@@ -222,6 +207,7 @@ const Layout = () => {
         style={{ width: rightAsideSize, transition:'0.6s' }}
       >
       <FriendSuggestion/>
+      <FriendRequest/>
         <Card title="My Friends">
           <div className="mt-4 space-y-3 " >
             {Array(12)

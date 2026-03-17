@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react"
 import Context from "../Context"
 import HttpInterceptor from "../lib/Htttpinterceptor"
 import { Navigate, Outlet } from "react-router-dom"
+import { Skeleton } from "antd"
 
 const RedirectGuard = () => {
    const { session, setsession } = useContext(Context)
@@ -20,7 +21,7 @@ const RedirectGuard = () => {
   }, [])
 
   if (session === null) {
-    return <div>Checking session...</div>
+    return <Skeleton active/>
   }
 
   if (session === false) {

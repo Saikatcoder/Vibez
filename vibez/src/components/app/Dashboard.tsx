@@ -4,13 +4,6 @@ import Button from "../shared/Button"
 const Dashboard = () => {
   return (
     <div className="p-4 lg:p-6 bg-gray-100 min-h-full">
-
-      {/* HEADER */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-xl font-semibold">Dashboard</h1>
-        <Button type="primary">Create Post</Button>
-      </div>
-
       {/* TOP STATS */}
       <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 mb-6">
         {[
@@ -27,7 +20,9 @@ const Dashboard = () => {
           </div>
         ))}
       </div>
-
+      <div className="flex items-center justify-between mb-6">
+        <Button type="primary" loading={false}>Create Post</Button>
+      </div>
       {/* MAIN GRID */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
 

@@ -2,6 +2,7 @@ import { useContext, useEffect } from "react"
 import { Navigate, Outlet } from "react-router-dom"
 import HttpInterceptor from "../lib/Htttpinterceptor"
 import Context from "../Context"
+import { Skeleton } from "antd"
 
 const AuthGuard = () => {
   const { session, setsession } = useContext(Context)
@@ -20,7 +21,7 @@ const AuthGuard = () => {
   }, [])
 
   if (session === null) {
-    return <div>Checking session...</div>
+    return <Skeleton active/>
   }
 
   if (session === false) {

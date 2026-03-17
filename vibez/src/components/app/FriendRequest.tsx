@@ -14,16 +14,17 @@ interface LoadingInterface{
     state:boolean
     index : null | number
 }
-const FriendSuggestion = () => {
-   const [loding , setloding] = useState<LoadingInterface>({state:false, index:null})
-   const {data, error, isLoading} =  useSWR('/friend/suggestion', Fetcher)
-   const sendFriendRequest = async (id:string, index:number)=>{
+
+const FriendRequest = () => {
+  const [loding , setloding] = useState<LoadingInterface>({state:false, index:null})
+   const {data, error, isLoading} =  useSWR('/friend/request', Fetcher)
+   const acceptedFriendRequest = async (id:string, index:number)=>{
      try {
         setloding({state:true , index})
-         await HttpInterceptor.post("/friend/add-friend",{friend: id})
-       toast.success("friend request send!",{position:"top-center"})
-       mutate('/friend/suggestion')
-       mutate('/friend')
+        await HttpInterceptor.put(`/friend/${id}`,{status : "accepted"})
+        toast.success("friend request accepted",{position:"top-center"})
+        mutate('/friend/request')
+        mutate('/friend')
      } catch (error) {
         CatchError(error)
      }finally{
@@ -32,7 +33,7 @@ const FriendSuggestion = () => {
    }
   return (
       <div className="w-100 overflow-auto h-60 ">
-          <Card title="Suggestion" divider={false}>
+          <Card title="Friend's Request" divider={false}>
           { isLoading && <Skeleton active/> }
           {error && <Error message={error.message}/>}
           {
@@ -41,13 +42,19 @@ const FriendSuggestion = () => {
                 data && data.map((item: any,index:number)=>(
                   <div key={index} className=" flex gap-4">
                     <img 
-                    src={item.image || "/image/avtar.png"}
+                    src={item.user.image || "/image/avtar.png"}
                      alt="Suggested User Avatar" 
                      className="w-16 h-16 rounded object-cover"/>
                     <div className="">
-                      <h1 className="text-black font-medium capitalize">{item.fullname}</h1>
+                      <h1 className="text-black font-medium capitalize">{item.user.fullname}</h1>
                       <small>{moment(item.createdAt).format('DD MMM, YYYY')}</small>
-                    <SmallButton onClick={()=>sendFriendRequest(item._id, index)} type="success" icon="user-add-line" size="sm" loading={loding.state && loding.index === index}>Add Friend</SmallButton>
+                    <SmallButton 
+                    onClick={()=>acceptedFriendRequest(item._id, index)} 
+                    type="secondary" 
+                    icon="user-add-line" 
+                    loading={loding.state && loding.index === index}>
+                      Accepted
+                      </SmallButton>
                     </div>
                   </div>
                 ))
@@ -65,4 +72,5 @@ const FriendSuggestion = () => {
   )
 }
 
-export default FriendSuggestion
+export default FriendRequest
+

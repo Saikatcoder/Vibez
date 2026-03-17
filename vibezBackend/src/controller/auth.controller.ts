@@ -9,8 +9,8 @@ import { v4 as uuid } from "uuid";
 import moment from "moment";
 
 
-const accessTokenExpiry = '10m'
-const tenminutes =( 10*60)*1000
+const accessTokenExpiry = '40m'
+const tenminutes =( 40*60)*1000
 const sevenDaysMs = (7*24*60*60)*1000
 
 type TokenType = 'accessToken' | 'refreshToken'
@@ -47,7 +47,6 @@ export const signup = async (req: Request, res: Response)=>{
     try {
         await AuthModel.create(req.body)
         res.json({message: "Signup success"})
-
     }
     catch(err: unknown)
     {
@@ -114,25 +113,22 @@ export const getSession = async (req: Request, res: Response)=>{
 }
 
 
+
 export const updateProfilePicture = async (req: SessionInterface, res: Response)=>{
-  try {
-    const path =` ${process.env.S3_URL}/${req.body.path}`
+    try {
+        const path = `${process.env.S3_URL}/${req.body.path}`
+        if(!path || !req.session)
+            throw TryError("Failed to update profile picture", 400)
 
-    if(!path || !req.session)
-        throw TryError("Failed to update profile picture", 400)
+        await AuthModel.updateOne({_id: req.session.id}, {$set: {image: path}})
 
-    await AuthModel.updateOne(
-        {_id: req.session.id},
-        {$set: {image: path}}
-    )
-    
-    res.json({image: path})
-
-  } catch (error) {
-    catchError(error, res)
-  }
+        res.json({image: path})
+    }
+    catch(err)
+    {
+        catchError(err, res, "Failed to update profile picture")
+    }
 }
-
 
 export const refreshToken = async (req: SessionInterface, res: Response)=>{
     try{

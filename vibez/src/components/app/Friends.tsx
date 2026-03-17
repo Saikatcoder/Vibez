@@ -1,6 +1,26 @@
+import useSWR, { mutate } from "swr"
 import Card from "../shared/Card"
+import Fetcher from "../../lib/fetcher"
+import Error from "../shared/Error"
+import { Skeleton } from "antd"
+import CatchError from "../../lib/CatchError"
+import HttpInterceptor from "../../lib/Htttpinterceptor"
 
 const Friends = () => {
+  const {data, error, isLoading} = useSWR("/friend/fetch-friends",Fetcher)
+  if(isLoading)
+    return<Skeleton active/>
+  if(error)
+    return <Error message={error.message}/>
+const unFriend =async(id: string)=>{
+  try {
+    await HttpInterceptor.delete(`/friend/${id}`)
+    mutate("/friend")
+
+  } catch (error) {
+    CatchError(error)
+  }
+}
   return (
     <div
       className="
@@ -10,7 +30,8 @@ const Friends = () => {
         lg:grid-cols-4
       "
     >
-      {Array(20).fill(0).map((_, index) => (
+      {
+        data.map((item: any, index: number) => (
         <Card
           key={index}
         >
@@ -18,23 +39,18 @@ const Friends = () => {
 
             {/* AVATAR */}
             <img
-              src="/image/avtar.png"
+              src={item.friend.image || "/image/avtar.png"}
               alt="profile"
               className="w-20 h-20 rounded-full object-cover"
             />
 
             {/* NAME */}
             <h2 className="mt-3 text-base font-semibold text-gray-900">
-              Saikat
+              {item.friend.fullname}
             </h2>
 
-            {/* USERNAME / META */}
-            <p className="text-sm text-gray-500">
-              @saikat
-            </p>
-
-            {/* ACTION BUTTON */}
-            <button
+            {item.status === "accepted" ? <button
+            onClick={()=>unFriend(item._id)}
               className="
                 mt-4 w-full py-2 rounded-lg
                 text-sm font-medium
@@ -42,8 +58,22 @@ const Friends = () => {
                 hover:bg-blue-600 transition
               "
             >
-              Unfollow
+              UnFriend
             </button>
+            :
+           <button
+              className="
+                mt-4 w-full py-2 rounded-lg
+                text-sm font-medium
+                bg-green-500 text-white
+                hover:bg-green-600 transition
+              "
+            >
+              <i className="ri-check-double-line"></i>
+             Request Send
+            </button>
+            }
+            
 
           </div>
         </Card>
