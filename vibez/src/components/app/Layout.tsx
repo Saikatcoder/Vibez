@@ -9,8 +9,7 @@ import useSWR, { mutate } from "swr"
 import Fetcher from "../../lib/fetcher"
 import { toast } from "react-toastify"
 import CatchError from "../../lib/CatchError"
-import FriendSuggestion from "./FriendSuggestion"
-import FriendRequest from "./FriendRequest"
+
 
 const EightMinutes = 8*60*1000
 
@@ -206,8 +205,7 @@ const Layout = () => {
         lg:translate-x-0`}
         style={{ width: rightAsideSize, transition:'0.6s' }}
       >
-      <FriendSuggestion/>
-      <FriendRequest/>
+      
         <Card title="My Friends">
           <div className="mt-4 space-y-3 " >
             {Array(12)

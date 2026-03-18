@@ -12,7 +12,8 @@ import AuthMiddleware from "./middleware/auth.middleware";
 import AuthRouter from "./router/auth.route";
 import StorageRouter from "./router/storage.route";
 import FriendRouter from "./router/friend.route";
-
+import SwaggerConfig from "./util/swagger";
+import { serve, setup } from "swagger-ui-express";
 
 const app = express();
 app.listen(process.env.PORT || 8080, ()=>{
@@ -28,6 +29,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({extended: false}))
 
+app.use("/api-docs",serve, setup(SwaggerConfig))
 app.use("/auth", AuthRouter)
 app.use("/storage",AuthMiddleware, StorageRouter)
 app.use('/friend', AuthMiddleware, FriendRouter)

@@ -7,7 +7,6 @@ import Home from "./components/Home"
 import Layout from "./components/app/Layout"
 import Dashboard from "./components/app/Dashboard"
 import Post from "./components/app/Post"
-import Friends from "./components/app/Friends"
 import Video from "./components/app/Video"
 import Audio from "./components/app/Audio"
 import Chat from "./components/app/Chat"
@@ -19,6 +18,7 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import AuthGuard from "./guard/AuthGuard"
 import RedirectGuard from "./guard/RedirectGuard"
+import FriendList from "./components/app/friends/FriendList"
 
 
 const App = () => {
@@ -37,7 +37,7 @@ const App = () => {
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="my-post" element={<Post />} />
-            <Route path="friends" element={<Friends />} />
+            <Route path="friends" element={<FriendList />} />
             <Route path="video-chat" element={<Video />} />
             <Route path="audio-chat" element={<Audio />} />
             <Route path="chat" element={<Chat />} />
