@@ -15,6 +15,7 @@ const Login = () => {
     toast.success("Login successful");
   } catch (err: unknown) {
     CatchError(err);
+    toast.error("login failed")
   }
 };
   return (

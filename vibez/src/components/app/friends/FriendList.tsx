@@ -1,5 +1,3 @@
-
-
 const FriendList = () => {
   return (
     <div>

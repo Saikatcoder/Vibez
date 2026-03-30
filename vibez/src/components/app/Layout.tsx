@@ -9,7 +9,9 @@ import useSWR, { mutate } from "swr"
 import Fetcher from "../../lib/fetcher"
 import { toast } from "react-toastify"
 import CatchError from "../../lib/CatchError"
-
+import FriendSuggestion from "./FriendSuggestion"
+import FriendRequest from "./FriendRequest"
+import FriendsOnline from "./friends/FriendsOnline"
 
 const EightMinutes = 8*60*1000
 
@@ -94,7 +96,6 @@ const Layout = () => {
             }
         }
     }
-
 
   return (
     <div className="min-h-screen bg-gray-100">
@@ -205,8 +206,9 @@ const Layout = () => {
         lg:translate-x-0`}
         style={{ width: rightAsideSize, transition:'0.6s' }}
       >
-      
-        <Card title="My Friends">
+      <FriendSuggestion/>
+      <FriendRequest/>
+        {/* <Card title="My Friends">
           <div className="mt-4 space-y-3 " >
             {Array(12)
               .fill(0)
@@ -228,7 +230,7 @@ const Layout = () => {
                   />
 
                   <div className="flex gap-2 opacity-80 group-hover:opacity-100">
-                  <Link to="/app/chat" className="rounded-full bg-purple-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
+                  <Link to="/app/chat/:id" className="rounded-full bg-purple-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
                    <i className="ri-chat-3-line text-sm" />
                   </Link>
                    <Link to="/app/audio-chat" className="rounded-full bg-purple-100 p-2 text-green-600 hover:bg-green-500 hover:text-white">
@@ -241,7 +243,8 @@ const Layout = () => {
                 </div>
               ))}
           </div>
-        </Card>
+        </Card> */}
+        <FriendsOnline/>
       </aside>
     </div>
   )

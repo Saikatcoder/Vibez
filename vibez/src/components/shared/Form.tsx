@@ -5,10 +5,11 @@ export type FormDataType = Record<string, string>
 interface FormInterface {
     children: ReactNode
     className?: string
+    reset:boolean
     onValue?: (value: FormDataType)=>void
 }
 
-const Form : FC<FormInterface>= ({children, className,onValue}) => {
+const Form : FC<FormInterface>= ({children, className,onValue,reset=false}) => {
     const handleForm = (e: FormEvent<HTMLFormElement>) => {
        e.preventDefault()
        const form = e.currentTarget
@@ -19,7 +20,13 @@ const Form : FC<FormInterface>= ({children, className,onValue}) => {
             data[key] = value.toString()
         })
         if(onValue)
+        {
           onValue(data)
+          if(reset)
+          {
+            form.reset()
+          }
+        }
     }
   return (
     <form className={className} onSubmit={handleForm}>
