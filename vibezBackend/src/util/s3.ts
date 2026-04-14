@@ -5,7 +5,7 @@ type AclType = "private" | "public-read";
 
 const S3connection = new S3Client({
     region: process.env.AWS_REGION,
-    endpoint: `https://s3-${process.env.AWS_REGION}.amazonaws.com`,
+    endpoint: `https://s3.${process.env.AWS_REGION}.amazonaws.com`,
     credentials:{
         accessKeyId:process.env.AWS_ACCESS_KEY_ID!,
         secretAccessKey:process.env.AWS_SECRET_ACCESS_KEY!

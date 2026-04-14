@@ -14,7 +14,7 @@ interface AvatarInterface {
 const sizeMap = {
   sm: "w-8 h-8",
   md: "w-12 h-12",
-  lg: "w-24 h-24",
+  lg: "w-30 h-30",
 }
 
 const Avatar: FC<AvatarInterface> = ({
