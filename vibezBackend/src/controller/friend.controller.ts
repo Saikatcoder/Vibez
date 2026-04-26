@@ -4,6 +4,7 @@ import FriendModel from "../model/Friend.model";
 import { SessionInterface } from "../middleware/auth.middleware";
 import AuthModel from "../model/auth.model";
 import mongoose from "mongoose";
+import PostModel from "../model/post.model";
 
 export const addFriend = async (req:SessionInterface, res:Response)=>{
  try {
@@ -18,7 +19,9 @@ export const addFriend = async (req:SessionInterface, res:Response)=>{
 export const fetchFrends = async (req:SessionInterface, res:Response)=>{
  try {
     const user = req.session?.id
-  const friends =  await FriendModel.find({ user}).populate('friend')
+  let friends =  await FriendModel.find({ user}).populate('friend')
+  const nonFriends = await FriendModel.find({ friend: user }).populate('user')
+  friends = [...friends,...nonFriends]
   res.json(friends)
  } catch (error) {
     catchError(error, res, "failed to friend friends")
@@ -107,3 +110,39 @@ res.json({message: "Friend status update"})
   }
 }
 
+// export const getUserStats = async (req: SessionInterface, res: Response) => {
+//   try {
+//     if(!req.session)
+//       throw TryError("failed to fetch user stats", 401)
+//     const userId = req.session.id
+
+//     const [friends, requests, posts] = await Promise.all([
+//       // total friends
+//       FriendModel.countDocuments({
+//         $or: [
+//           { user: userId, status: "accepted" },
+//           { friend: userId, status: "accepted" }
+//         ]
+//       }),
+
+//       // incoming friend requests
+//       FriendModel.countDocuments({
+//         friend: userId,
+//         status: "pending"
+//       }),
+
+//       PostModel.countDocuments({
+//         user: userId
+//       })
+//     ])
+
+//     res.json({
+//       friends,
+//       requests,
+//       posts
+//     })
+
+//   } catch (err) {
+//     catchError(err, res, "Failed to fetch user stats")
+//   }
+// }

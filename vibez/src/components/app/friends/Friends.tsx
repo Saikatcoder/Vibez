@@ -4,62 +4,63 @@ import HttpInterceptor from "../../../lib/Htttpinterceptor"
 import CatchError from "../../../lib/CatchError"
 import Avatar from "../../shared/Avatar"
 import Fetcher from "../../../lib/fetcher"
+import { Skeleton } from "antd"
 
 const Friends = () => {
+
   const { data, error, isLoading } = useSWR(
     "/friend/fetch-friends",
     Fetcher
   )
 
+
   if (isLoading) {
-    return <div className="text-gray-400">Loading...</div>
+    return <Skeleton active/>
   }
 
   if (error) {
     return <Error message={error.message} />
   }
 
-  if (!data || data.length === 0) {
+  const list = data?.data || data || []
+
+  if (!list || list.length === 0) {
     return <p className="text-gray-500">No friends found</p>
   }
 
   const unFriend = async (id: string) => {
     try {
       await HttpInterceptor.delete(`/friend/${id}`)
-
-   
       mutate("/friend/fetch-friends")
     } catch (error) {
-      CatchError(error)
+      CatchError(error,'top-center')
     }
   }
 
   return (
     <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-4">
-      {data.map((item: any) => (
+
+      {list.map((item: any, index:number) => (
         <div
-          key={item._id}
+          key={item._id || index}
           className="bg-[#161616] border border-[#2a2a2a] rounded-xl p-4 flex flex-col items-center text-center hover:bg-[#1f1f1f] transition"
         >
      
           <div className="relative">
             <Avatar
-              image={item.friend.image || "/image/avtar.png"}
+              image={item.friend?.image || "/image/avtar.png"}
               size="lg"
             />
 
-            
-            {item.friend.isOnline && (
+            {item.friend?.isOnline && (
               <span className="absolute bottom-1 right-1 w-3 h-3 bg-[#00ff6a] rounded-full border-2 border-[#161616]" />
             )}
           </div>
 
-          
           <h2 className="mt-3 text-sm font-semibold capitalize text-white">
-            {item.friend.fullname}
+            {item.friend?.fullname || "Unknown"}
           </h2>
 
-         
           <p className="text-xs text-gray-400 mt-1">
             {item.status === "accepted" ? "Friend" : "Requested"}
           </p>
@@ -72,10 +73,7 @@ const Friends = () => {
               Unfriend
             </button>
           ) : (
-            <button
-              className="mt-3 w-full py-2 rounded-lg text-sm font-medium bg-[#9acd32] text-black"
-            >
-              <i className="ri-check-double-line mr-1"></i>
+            <button className="mt-3 w-full py-2 rounded-lg text-sm font-medium bg-[#9acd32] text-black">
               Requested
             </button>
           )}

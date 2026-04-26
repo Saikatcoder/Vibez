@@ -1,35 +1,24 @@
-import { Server } from "socket.io";
+import { Server } from "socket.io"
 
-const VideoSocket = (io: Server) => {
- io.on('connection', (socket) => {
+const VideoSocket = (io: Server)=>{
+    io.on("connection", (socket)=>{ 
 
-   // OFFER
-   socket.on("webrtc_offer", ({offer, to})=>{
-       io.to(to).emit("webrtc_offer", {
-         offer,
-         from: socket.id
-       })
-   })
+        socket.on("offer", ({offer, to})=>{
+            io.to(to).emit("offer", {offer, from: socket.id, })
+        })
 
-   // ANSWER
-   socket.on("webrtc_answer", ({answer, to})=>{
-       io.to(to).emit("webrtc_answer", {
-         answer,
-         from: socket.id
-       })
-   })
+        socket.on("candidate", ({candidate, to})=>{
+            io.to(to).emit("candidate", {candidate, from: socket.id})
+        })
 
-   // ICE CANDIDATE (NEW 🔥)
-   socket.on("ice_candidate", ({candidate, to})=>{
-       io.to(to).emit("ice_candidate", {
-         candidate,
-         from: socket.id
-       })
-   })
+        socket.on("answer", ({answer, to})=>{
+            io.to(to).emit("answer", {answer, from: socket.id})
+        })
 
- })
+        socket.on("end", ({to})=>{
+            io.to(to).emit("end", {from: socket.id})
+        })
+    })
 }
 
 export default VideoSocket
-
-

@@ -18,14 +18,16 @@ import { ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import AuthGuard from "./guard/AuthGuard"
 import RedirectGuard from "./guard/RedirectGuard"
-import FriendList from "./components/app/friends/FriendList"
+import Friends from "./components/app/friends/Friends"
 
 
 const App = () => {
   const [session, setsession] = useState(null)
+  const [liveActiveSession , setLiveActiveSession] = useState(null)
+
 
   return (
-    <Context.Provider value={{ session, setsession }}>
+    <Context.Provider value={{ session, setsession , liveActiveSession, setLiveActiveSession }}>
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -37,7 +39,7 @@ const App = () => {
           <Route path="/app" element={<Layout />}>
             <Route index element={<Dashboard />} />
             <Route path="my-post" element={<Post />} />
-            <Route path="friends" element={<FriendList />} />
+            <Route path="friends" element={<Friends />} />
             <Route path="video-chat/:id" element={<Video />} />
             <Route path="audio-chat/:id" element={<Audio />} />
             <Route path="chat/:id" element={<Chat />} />
@@ -52,3 +54,4 @@ const App = () => {
 }
 
 export default App
+

@@ -88,6 +88,7 @@ export const login = async (req: Request, res: Response)=>{
         res.cookie("accessToken", accessToken, getoptions('accessToken'))
         res.cookie("refreshToken", refreshToken, getoptions('refreshToken'))
         res.json({message: 'Login success'})
+        
    }
    catch(err: unknown)
    {
@@ -117,15 +118,17 @@ export const getSession = async (req: Request, res: Response)=>{
 export const updateProfilePicture = async (req: SessionInterface, res: Response)=>{
     try {
         const path = `${process.env.S3_URL}/${req.body.path}`
+
         if(!path || !req.session)
             throw TryError("Failed to update profile picture", 400)
 
         await AuthModel.updateOne({_id: req.session.id}, {$set: {image: path}})
-
+       
         res.json({image: path})
     }
     catch(err)
     {
+       
         catchError(err, res, "Failed to update profile picture")
     }
 }

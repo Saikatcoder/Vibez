@@ -52,7 +52,7 @@ const AttachmentUi: FC<AttachmentUiInterface> = ({ file }) => {
 const Chat = () => {
   const chatContainer = useRef<HTMLDivElement | null>(null)
   const [chats, setChats] = useState<any[]>([])
-  const { session } = useContext(Context)
+  const { session,liveActiveSession } = useContext(Context)
   const { id } = useParams()
   const { data } = useSWR(id ? `/chat/${id}` : null, id ? Fetcher : null)
 
@@ -149,9 +149,9 @@ const Chat = () => {
       {/* HEADER */}
       <div className='flex items-center justify-between p-4 border-b border-[#2a2a2a] bg-[#161616]'>
         <div className='flex items-center gap-3'>
-          <Avatar image='/image/avtar.png' size='sm' />
+          <Avatar image={liveActiveSession.image} size='sm' />
           <div>
-            <p className='text-sm font-semibold'>Chat User</p>
+            <p className='text-sm font-semibold capitalize'>{liveActiveSession.fullname}</p>
             <span className='text-xs text-[#9acd32]'>online</span>
           </div>
         </div>

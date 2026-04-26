@@ -1,19 +1,32 @@
+import { useContext } from "react"
 import Avatar from "../shared/Avatar"
-import Button from "../shared/Button"
+import Context from "../../Context"
+import { useNavigate } from "react-router-dom"
+
 
 const Audio = () => {
+  const navigate = useNavigate()
+  const {session , liveActiveSession } = useContext(Context)
+  
+  if(!liveActiveSession)
+    return navigate("/app")
+
+  
+
+
+
   return (
     <div className="group relative flex h-[calc(100vh-120px)] w-full items-center justify-center rounded-2xl bg-linear-to-br from-indigo-900 to-purple-900">
 
       <div className="absolute top-6 text-center text-white z-10">
         <p className="text-sm opacity-80">Audio Call</p>
-        <h2 className="mt-1 text-lg font-semibold">Saikat Dutta</h2>
+        <h2 className="mt-1 text-lg font-semibold">{session.name}</h2>
       </div>
 
       <div className="flex flex-col items-center gap-4 z-10">
         <div className="relative">
           <span className="absolute inset-0 animate-ping rounded-full bg-white/30" />
-          <Avatar image="/image/avtar.png" size="lg" />
+          <Avatar image={session.image || "/image/avtar.png"} size="lg" />
         </div>
         <p className="text-white/80 text-sm">Speaking...</p>
       </div>

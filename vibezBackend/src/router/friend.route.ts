@@ -8,6 +8,7 @@ FriendRouter.put('/:id',updateFriendStatus)
 FriendRouter.get('/fetch-friends', fetchFrends)
 FriendRouter.get('/suggestion',friendSuggestion)
 FriendRouter.get('/request',friendRequest)
+// FriendRouter.get('/stats', getUserStats)
 FriendRouter.delete("/:id",unFriend)
 
 export default FriendRouter

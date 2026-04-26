@@ -25,13 +25,11 @@ const FriendSuggestion = () => {
       setLoading({ state: true, index })
       await HttpInterceptor.post('/friend/add-friend', { friend: id })
       toast.success('Request sent', { position: 'top-center' })
+      mutate('/friend/fetch-friends')
       mutate('/friend/suggestion')
-      mutate('/friend')
     } catch (err) {
-      CatchError(err)
-    } finally {
-      setLoading({ state: false, index: null })
-    }
+      CatchError(err, 'top-center')
+    } 
   }
 
   return (
@@ -44,7 +42,7 @@ const FriendSuggestion = () => {
       {isLoading && <Skeleton active />}
       {error && <Error message={error.message} />}
 
-      <div className="space-y-3 max-h-[240px] overflow-y-auto pr-1">
+      <div className="space-y-3 max-h-60 overflow-y-auto pr-1">
         {data && data.length === 0 && (
           <Empty description={<span className="text-gray-500">No suggestions</span>} />
         )}
@@ -80,3 +78,6 @@ const FriendSuggestion = () => {
 }
 
 export default FriendSuggestion
+
+
+

@@ -20,6 +20,8 @@ import corsConfig from "./util/cors";
 import ChatSocket from "./socket/chat.socket";
 import ChatRouter from "./router/chat.route";
 import VideoSocket from "./socket/video.socket";
+import postRouter from "./router/post.route";
+// import paymentRouter from "./router/payment.route";
 
 const app = express();
 const server = createServer(app)
@@ -45,3 +47,7 @@ app.use("/auth", AuthRouter)
 app.use("/storage",AuthMiddleware, StorageRouter)
 app.use('/friend', AuthMiddleware, FriendRouter)
 app.use("/chat",ChatRouter)
+app.use('/post',AuthMiddleware, postRouter)
+// app.use("/payment",paymentRouter)
+
+
